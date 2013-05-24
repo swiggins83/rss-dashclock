@@ -1,20 +1,4 @@
-/*
- * Copyright 2013 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.example.dashclock.exampleextension;
+package com.swiggins.rssfordashclock;
 
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -28,10 +12,10 @@ import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
-public class ExampleSettingsActivity extends PreferenceActivity {
+public class RssDashClockSettingsActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setIcon(R.drawable.ic_extension_example);
+        //getActionBar().setIcon(R.drawable.ic_extension_example);
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -63,7 +47,7 @@ public class ExampleSettingsActivity extends PreferenceActivity {
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
-        bindPreferenceSummaryToValue(findPreference(ExampleExtension.PREF_NAME));
+        bindPreferenceSummaryToValue(findPreference(RssDashClockService.PREF_NAME));
     }
 
     /**
