@@ -1,12 +1,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="@string/pref_cat_title" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="prefSendReport"
+            android:summary="@string/pref_send_report_summary"
+            android:title="@string/pref_check_title" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
     <ListPreference
-        android:title="@string/pref_list_title"
-        android:summary="Input feeds to grab."
-        android:key="listPref"
-        android:defaultValue="@string/default_feed"
-        android:entries="@array/rss_feednames"
-        android:entryValues="@array/rss_url" />
+        android:key="prefSyncFrequency"
+        android:summary="@string/pref_sync_summary"
+        android:entries="@array/sync_frequency"
+        android:entryValues="@array/sync_frequency_values"
+        android:title="@string/pref_sync_title" >
+    </ListPreference>
 
     <EditTextPreference
         android:key="pref_name"

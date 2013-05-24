@@ -28,8 +28,6 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            // TODO: if the previous activity on the stack isn't a ConfigurationActivity,
-            // launch it.
             finish();
             return true;
         }
@@ -38,15 +36,10 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
     }
 
     private void setupSimplePreferencesScreen() {
-        // In the simplified UI, fragments are not used at all and we instead
-        // use the older PreferenceActivity APIs.
 
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_example);
 
-        // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
-        // their values. When their values change, their summaries are updated
-        // to reflect the new value, per the Android Design guidelines.
         bindPreferenceSummaryToValue(findPreference(RssDashClockService.PREF_NAME));
     }
 
@@ -71,29 +64,6 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
                         index >= 0
                                 ? listPreference.getEntries()[index]
                                 : null);
-
-            } else if (preference instanceof RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
-                // using RingtoneManager.
-                if (TextUtils.isEmpty(stringValue)) {
-                    // Empty values correspond to 'silent' (no ringtone).
-                    //preference.setSummary(R.string.pref_ringtone_silent);
-
-                } else {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null) {
-                        // Clear the summary if there was a lookup error.
-                        preference.setSummary(null);
-                    } else {
-                        // Set the summary to reflect the new ringtone display
-                        // name.
-                        String name = ringtone.getTitle(preference.getContext());
-                        preference.setSummary(name);
-                    }
-                }
-
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
