@@ -1,0 +1,6 @@
+# view AndroidManifest.xml #generated:10
+-keep class com.swiggins.rssfordashclock.RssDashClockService { <init>(...); }
+
+# view AndroidManifest.xml #generated:23
+-keep class com.swiggins.rssfordashclock.RssDashClockSettingsActivity { <init>(...); }
+

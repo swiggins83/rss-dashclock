@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string-array name="rss_feednames">
+        <item>Reddit</item>
+        <item>Hacker News</item>
+    </string-array>
+
+    <string-array name="rss_url">
+        <item>http://www.reddit.com/.rss</item>
+        <item>https://news.ycombinator.com/rss</item>
+    </string-array>
+
+</resources>
