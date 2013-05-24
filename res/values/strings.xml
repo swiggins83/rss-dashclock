@@ -6,4 +6,6 @@
     <string name="title_settings">Settings</string>
     <string name="pref_name_title">Steven</string>
     <string name="pref_name_default">John Smith</string>
+    <string name="pref_list_title">This is a list</string>
+    <string name="default_feed">https://news.ycombinator.com/rss</string>
 </resources>

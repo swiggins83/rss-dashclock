@@ -1,5 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ListPreference
+        android:title="@string/pref_list_title"
+        android:summary="Input feeds to grab."
+        android:key="listPref"
+        android:defaultValue="@string/default_feed"
+        android:entries="@array/rss_feednames"
+        android:entryValues="@array/rss_url" />
+
     <EditTextPreference
         android:key="pref_name"
         android:title="@string/pref_name_title"
