@@ -1,7 +1,5 @@
 package com.swiggins.rssfordashclock;
 
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -12,17 +10,35 @@ import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import android.preference.CheckBoxPreference;
+import android.content.SharedPreferences;
+import android.util.Log;
+
 public class RssDashClockSettingsActivity extends PreferenceActivity {
+
+    String pref_sync_frequency;
+    boolean pref_update_screen;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //getActionBar().setIcon(R.drawable.ic_extension_example);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        addPreferencesFromResource(R.xml.pref_example);
+
+        final CheckBoxPreference checkbox = (CheckBoxPreference) getPreferenceManager().findPreference("pref_update_screen");
+        checkbox.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference pref, Object newValue) {
+                Log.d("swiggins", "Pref " + pref.getKey() + " changed to " + newValue.toString());
+                return true;
+            }
+        });
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        setupSimplePreferencesScreen();
+        getPrefs();
     }
 
     @Override
@@ -35,61 +51,9 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupSimplePreferencesScreen() {
-
-        // Add 'general' preferences.
-        addPreferencesFromResource(R.xml.pref_example);
-
-        bindPreferenceSummaryToValue(findPreference(RssDashClockService.PREF_NAME));
-    }
-
-    /**
-     * A preference value change listener that updates the preference's summary to reflect its new
-     * value.
-     */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener
-            = new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
-
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
-            }
-            return true;
-        }
-    };
-
-    /**
-     * Binds a preference's summary to its value. More specifically, when the preference's value is
-     * changed, its summary (line of text below the preference title) is updated to reflect the
-     * value. The summary is also immediately updated upon calling this method. The exact display
-     * format is dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+    private void getPrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        pref_sync_frequency = prefs.getString("pref_sync_frequency", "1");
+        pref_update_screen = prefs.getBoolean("pref_update_screem", true);
     }
 }
