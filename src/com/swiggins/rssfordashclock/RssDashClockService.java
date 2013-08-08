@@ -17,8 +17,10 @@ import android.net.Uri;
 import android.util.Log;
 
 import java.util.List;
+import java.util.LinkedList;
 import java.util.ArrayList;
-import java.util.Stack;
+import java.util.Queue;
+import java.util.Collections;
 import java.net.URL;
 
 public class RssDashClockService extends DashClockExtension
@@ -29,21 +31,17 @@ public class RssDashClockService extends DashClockExtension
     private static final String PREF_SYNC_FREQUENCY = "pref_sync_frequency";
 
     protected static List<String> links = new ArrayList<String>();
-    private static Stack<Message> feedstack = new Stack<Message>();
+    private static Queue<Message> feedqueue = new LinkedList<Message>();
     private long lastUpdate = 0;
 
     protected void onInitialize(boolean isReconnect) {
 
 		SharedPreferences prefs = this.getSharedPreferences("com.swiggins.rssfordashclock", Context.MODE_PRIVATE);
         boolean updateOnAppearance = prefs.getBoolean(PREF_UPDATE_SCREEN, true);
-        String addFeed = prefs.getString(PREF_FEED, getString(R.string.pref_feed));
 
 		updateFeeds();
         
-		if (updateOnAppearance)
-			this.setUpdateWhenScreenOn(updateOnAppearance);
-		else
-			this.setUpdateWhenScreenOn(updateOnAppearance);
+		this.setUpdateWhenScreenOn(updateOnAppearance);
 
     }
 
@@ -53,20 +51,20 @@ public class RssDashClockService extends DashClockExtension
 		AndroidSaxFeedParser feed = null;
 
 		try {
-			while (!feedstack.isEmpty())
-				feedstack.pop();
+			while (!feedqueue.isEmpty())
+				feedqueue.poll();
 
 			for (String link : links) {
 				feed = new AndroidSaxFeedParser(link);
 				for (Message m : feed.parse())
-					feedstack.push(m);
+					feedqueue.add(m);
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		//Collections.sort(feedstack);
+		//Collections.sort(feedqueue);
 
     }
 	
@@ -78,16 +76,16 @@ public class RssDashClockService extends DashClockExtension
             .visible(true)
             .icon(R.drawable.ic_extension_example)
             .status("Rss")
-            .expandedTitle((feedstack.isEmpty()) ? "Error grabbing feeds" : feedstack.peek().getTitle())
-            .expandedBody((feedstack.isEmpty()) ? "Error grabbing feeds" : feedstack.peek().getDescription())
+            .expandedTitle((feedqueue.isEmpty()) ? "Error grabbing feeds" : feedqueue.peek().getTitle())
+            .expandedBody((feedqueue.isEmpty()) ? "Error grabbing feeds" : feedqueue.peek().getDescription())
             .clickIntent(new Intent(Intent.ACTION_VIEW,
-                Uri.parse((feedstack.isEmpty()) ? "Error grabbing feeds" : feedstack.peek().getLink().toString()))));
+                Uri.parse((feedqueue.isEmpty()) ? "Error grabbing feeds" : feedqueue.peek().getLink().toString()))));
 
 		if ((new java.util.Date()).getTime() - lastUpdate > 3600000)
             updateFeeds();
         else
 			if (!links.isEmpty())
-				feedstack.pop();
+				feedqueue.poll();
 
     }
 }

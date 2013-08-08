@@ -32,13 +32,14 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.pref);
 		setContentView(R.layout.main);
 
-		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RssDashClockService.links);
+		adapter = new ArrayAdapter<String>(this, R.id.url_list, RssDashClockService.links);
 		setListAdapter(adapter);
 
 		final SharedPreferences prefs = this.getSharedPreferences("com.swiggins.rssfordashclock", Context.MODE_PRIVATE);
         final CheckBoxPreference checkbox = (CheckBoxPreference) getPreferenceManager().findPreference("pref_update_screen");
         checkbox.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference pref, Object newValue) {
+				Log.d("swiggins", pref.getKey()+"="+newValue.toString());
 				prefs.edit().putBoolean(pref.getKey(), ((Boolean) newValue).booleanValue()).commit();
                 return true;
             }
@@ -48,9 +49,12 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
 		editText.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 			public boolean onPreferenceChange(Preference pref, Object newValue) {
 				prefs.edit().putString(pref.getKey(), newValue.toString()).commit();
-				RssDashClockService.links.add(newValue.toString());
-				adapter.notifyDataSetChanged();
-				Log.d("swiggins", "links.add, adapter.notify");
+				if (!RssDashClockService.links.contains(newValue.toString())) {
+					Log.d("swiggins", "links.add("+newValue.toString()+", adapter.notify()");
+					RssDashClockService.links.add(newValue.toString());
+					adapter.notifyDataSetChanged();
+				}
+
 				return true;
 			}
 		});
