@@ -17,10 +17,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.Collections;
 import java.net.URL;
 
 public class RssDashClockService extends DashClockExtension
@@ -43,15 +41,22 @@ public class RssDashClockService extends DashClockExtension
 		if (addFeed.equals("Enter a URL"))
             Log.d("swiggins", addFeed + " is not being added.");
         else {
-            Log.d("swiggins", addFeed + " is being added.");
-            links.add(addFeed);
+			if (links.contains(addFeed.toString()))
+				Log.d("swiggins", addFeed + " is already in the list.");
+			else {
+				Log.d("swiggins", addFeed + " is being added.");
+				links.add(addFeed);
+				for (String link : links) {
+					Log.d("swiggins", link);
+				}
+
+				updateFeeds();
+			}
         }
         
-		if (!links.isEmpty())
-			updateFeeds();
-
 		if (updateOnAppearance) {
-			Log.d("swiggins", "updateOnAppearance="+updateOnAppearance);
+			this.setUpdateWhenScreenOn(updateOnAppearance);
+		} else {
 			this.setUpdateWhenScreenOn(updateOnAppearance);
 		}
 
@@ -82,8 +87,7 @@ public class RssDashClockService extends DashClockExtension
 	
     protected void onUpdateData(int reason) {
 
-		if (links.isEmpty())
-			onInitialize(true);
+		onInitialize(true);
 
         publishUpdate(new ExtensionData()
             .visible(true)
@@ -97,8 +101,10 @@ public class RssDashClockService extends DashClockExtension
 		if ((new java.util.Date()).getTime() - lastUpdate > 3600000)
             updateFeeds();
         else
-			if (!links.isEmpty())
+			if (!links.isEmpty()) {
+				Log.d("swiggins", "pop!");
 				feedstack.pop();
+			}
 
     }
 }

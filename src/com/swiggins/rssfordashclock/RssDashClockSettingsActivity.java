@@ -32,7 +32,7 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
         final CheckBoxPreference checkbox = (CheckBoxPreference) getPreferenceManager().findPreference("pref_update_screen");
         checkbox.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference pref, Object newValue) {
-                Log.d("swiggins", "Pref " + pref.getKey() + " changed to " + newValue.toString());
+				prefs.edit().putBoolean(pref.getKey(), ((Boolean) newValue).booleanValue()).commit();
                 return true;
             }
         });
@@ -40,7 +40,6 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
 		final EditTextPreference editText = (EditTextPreference) getPreferenceManager().findPreference("pref_feed");
 		editText.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 			public boolean onPreferenceChange(Preference pref, Object newValue) {
-				Log.d("swiggins", "Pref " + pref.getKey() + " changed to " + newValue.toString());
 				prefs.edit().putString(pref.getKey(), newValue.toString()).commit();
 				return true;
 			}
@@ -62,9 +61,4 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //private void getPrefs() {
-    //    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-    //    pref_sync_frequency = prefs.getString("pref_sync_frequency", "1");
-    //    pref_update_screen = prefs.getBoolean("pref_update_screem", true);
-    //}
 }
