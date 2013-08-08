@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.net.Uri;
 import android.content.SharedPreferences;
+import android.content.Context;
 import android.preference.PreferenceManager;
 
 import android.util.Log;
@@ -25,81 +26,79 @@ import java.net.URL;
 public class RssDashClockService extends DashClockExtension
 {
     private static final String TAG = "RssDashClockExtension";
-    public static final String PREF_FEED = "pref_feed";
-    public static final String PREF_UPDATE_SCREEN = "pref_update_screen";
-    public static final String PREF_SYNC_FREQUENCY = "pref_sync_frequency";
+    private static final String PREF_FEED = "pref_feed";
+    private static final String PREF_UPDATE_SCREEN = "pref_update_screen";
+    private static final String PREF_SYNC_FREQUENCY = "pref_sync_frequency";
 
-    private List<String> links = new ArrayList<String>();
-    private Stack<Message> feedstack = new Stack<Message>();
+    private static List<String> links = new ArrayList<String>();
+    private static Stack<Message> feedstack = new Stack<Message>();
     private long lastUpdate = 0;
 
-    protected void onInitialize(boolean isReconnect)
-    {
-        boolean newFeed = true;
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean updateOnAppearance = sp.getBoolean(PREF_UPDATE_SCREEN, true);
-        String addFeed = sp.getString(PREF_FEED, getString(R.string.pref_feed));
+    protected void onInitialize(boolean isReconnect) {
 
-        if (Arrays.asList(links).contains(addFeed) && !addFeed.equals("Enter a URL")) {
-            newFeed = false;
-            Log.d("swiggins",addFeed + " is not being added.");
-        }
+		SharedPreferences prefs = this.getSharedPreferences("com.swiggins.rssfordashclock", Context.MODE_PRIVATE);
+        boolean updateOnAppearance = prefs.getBoolean(PREF_UPDATE_SCREEN, true);
+        String addFeed = prefs.getString(PREF_FEED, getString(R.string.pref_feed));
 
-        links.add("https://news.ycombinator.com/rss");
-        links.add("http://cube-drone.com/rss.xml");
-
-        if (newFeed == true) {
+		if (addFeed.equals("Enter a URL"))
+            Log.d("swiggins", addFeed + " is not being added.");
+        else {
+            Log.d("swiggins", addFeed + " is being added.");
             links.add(addFeed);
-            Log.d("swiggins",addFeed + " is being added.");
         }
-
-        updateFeeds();
         
-        Log.d("swiggins","setUpdateWhenScreenOn("+updateOnAppearance+")");
-        this.setUpdateWhenScreenOn(updateOnAppearance);
+		if (!links.isEmpty())
+			updateFeeds();
+
+		if (updateOnAppearance) {
+			Log.d("swiggins", "updateOnAppearance="+updateOnAppearance);
+			this.setUpdateWhenScreenOn(updateOnAppearance);
+		}
+
     }
 
-    protected void updateFeeds()
-    {
-        lastUpdate = new java.util.Date().getTime();
-        AndroidSaxFeedParser feed = null;
+    protected void updateFeeds() {
 
-        try
-        {
-            while (!feedstack.isEmpty())
-            {
-                feedstack.pop();
-            }
+		lastUpdate = new java.util.Date().getTime();
+		AndroidSaxFeedParser feed = null;
 
-            for (String link : links)
-            {
-                feed = new AndroidSaxFeedParser(link);
-                for (Message m : feed.parse())
-                    feedstack.push(m);
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+		try {
+			while (!feedstack.isEmpty())
+				feedstack.pop();
 
-        //Collections.sort(feedstack);
+			for (String link : links) {
+				feed = new AndroidSaxFeedParser(link);
+				for (Message m : feed.parse())
+					feedstack.push(m);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		//Collections.sort(feedstack);
+
     }
+	
+    protected void onUpdateData(int reason) {
 
-    protected void onUpdateData(int reason)
-    {
+		if (links.isEmpty())
+			onInitialize(true);
+
         publishUpdate(new ExtensionData()
             .visible(true)
             .icon(R.drawable.ic_extension_example)
             .status("Rss")
-            .expandedTitle(feedstack.peek().getTitle())
-            .expandedBody(feedstack.peek().getDescription())
+            .expandedTitle((feedstack.isEmpty()) ? "Error grabbing feeds" : feedstack.peek().getTitle())
+            .expandedBody((feedstack.isEmpty()) ? "Error grabbing feeds" : feedstack.peek().getDescription())
             .clickIntent(new Intent(Intent.ACTION_VIEW,
                 Uri.parse((feedstack.isEmpty()) ? "Error grabbing feeds" : feedstack.peek().getLink().toString()))));
 
-        if (feedstack.isEmpty() || (new java.util.Date()).getTime() - lastUpdate > 3600000)
+		if ((new java.util.Date()).getTime() - lastUpdate > 3600000)
             updateFeeds();
         else
-            feedstack.pop();
+			if (!links.isEmpty())
+				feedstack.pop();
+
     }
 }

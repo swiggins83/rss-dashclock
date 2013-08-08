@@ -2,15 +2,15 @@
 
     <PreferenceCategory android:title="@string/pref_cat_title" >
         <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="prefSendReport"
-            android:summary="@string/pref_send_report_summary"
-            android:title="@string/pref_check_title" >
+            android:key="pref_update_screen"
+            android:defaultValue="true"
+            android:summary="@string/pref_update_screen_summary"
+            android:title="@string/pref_update_screen_title" >
         </CheckBoxPreference>
     </PreferenceCategory>
 
     <ListPreference
-        android:key="prefSyncFrequency"
+        android:key="pref_sync_frequency"
         android:summary="@string/pref_sync_summary"
         android:entries="@array/sync_frequency"
         android:entryValues="@array/sync_frequency_values"
@@ -18,12 +18,11 @@
     </ListPreference>
 
     <EditTextPreference
-        android:key="pref_name"
-        android:title="@string/pref_name_title"
-        android:defaultValue="@string/pref_name_default"
+        android:key="pref_feed"
+        android:title="@string/pref_feed_title"
+        android:defaultValue="@string/pref_feed"
         android:selectAllOnFocus="true"
-        android:inputType="textCapWords"
-        android:capitalize="words"
+        android:inputType="text"
         android:singleLine="true"
         android:maxLines="1" >
     </EditTextPreference>

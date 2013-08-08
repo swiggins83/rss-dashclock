@@ -4,13 +4,13 @@
     <string name="extension_title">Rss Feed</string>
     <string name="extension_description">A clean Rss reader for DashClock.</string>
     <string name="title_settings">Settings</string>
-    <string name="pref_name_title">Steven</string>
-    <string name="pref_name_default">John Smith</string>
+    <string name="pref_feed_title">Enter a URL</string>
+    <string name="pref_feed">Enter a URL</string>
     <string name="pref_list_title">This is a list</string>
 
     <string name="pref_cat_title">Category!</string>
-    <string name="pref_send_report_summary">Send report summary</string>
-    <string name="pref_check_title">Check title</string>
-    <string name="pref_sync_summary">Sync summary</string>
-    <string name="pref_sync_title">Sync title</string>
+    <string name="pref_update_screen_title">Show new feed on appearance</string>
+    <string name="pref_update_screen_summary">Pop goes the stack</string>
+    <string name="pref_sync_title">Sync frequency</string>
+    <string name="pref_sync_summary">How often to check for new stuff</string>
 </resources>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="syncFrequency">
+    <string-array name="sync_frequency">
         <item name="1">Once a day</item>
         <item name="7">Once a week</item>
     </string-array>
 
-    <string-array name="syncFrequencyValues">
+    <string-array name="sync_frequency_values">
         <item name="1">1</item>
         <item name="7">7</item>
     </string-array>
