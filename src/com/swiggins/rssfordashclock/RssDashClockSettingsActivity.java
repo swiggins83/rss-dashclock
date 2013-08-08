@@ -7,11 +7,12 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import android.text.TextUtils;
-import android.view.MenuItem;
-
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
+import android.text.TextUtils;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+
 import android.content.SharedPreferences;
 import android.content.Context;
 import android.util.Log;
@@ -20,13 +21,19 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
 
     String pref_sync_frequency;
     boolean pref_update_screen;
+	ArrayAdapter<String> adapter;
 
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //getActionBar().setIcon(R.drawable.ic_extension_example);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        addPreferencesFromResource(R.xml.pref_example);
+        addPreferencesFromResource(R.xml.pref);
+		setContentView(R.layout.main);
+
+		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, RssDashClockService.links);
+		setListAdapter(adapter);
 
 		final SharedPreferences prefs = this.getSharedPreferences("com.swiggins.rssfordashclock", Context.MODE_PRIVATE);
         final CheckBoxPreference checkbox = (CheckBoxPreference) getPreferenceManager().findPreference("pref_update_screen");
@@ -41,6 +48,9 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
 		editText.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 			public boolean onPreferenceChange(Preference pref, Object newValue) {
 				prefs.edit().putString(pref.getKey(), newValue.toString()).commit();
+				RssDashClockService.links.add(newValue.toString());
+				adapter.notifyDataSetChanged();
+				Log.d("swiggins", "links.add, adapter.notify");
 				return true;
 			}
 		});

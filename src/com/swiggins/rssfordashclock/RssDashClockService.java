@@ -9,10 +9,10 @@ import org.developerworks.android.AndroidSaxFeedParser;
 import android.content.Intent;
 import android.app.Activity;
 import android.os.Bundle;
-import android.net.Uri;
 import android.content.SharedPreferences;
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.net.Uri;
 
 import android.util.Log;
 
@@ -28,7 +28,7 @@ public class RssDashClockService extends DashClockExtension
     private static final String PREF_UPDATE_SCREEN = "pref_update_screen";
     private static final String PREF_SYNC_FREQUENCY = "pref_sync_frequency";
 
-    private static List<String> links = new ArrayList<String>();
+    protected static List<String> links = new ArrayList<String>();
     private static Stack<Message> feedstack = new Stack<Message>();
     private long lastUpdate = 0;
 
@@ -38,27 +38,12 @@ public class RssDashClockService extends DashClockExtension
         boolean updateOnAppearance = prefs.getBoolean(PREF_UPDATE_SCREEN, true);
         String addFeed = prefs.getString(PREF_FEED, getString(R.string.pref_feed));
 
-		if (addFeed.equals("Enter a URL"))
-            Log.d("swiggins", addFeed + " is not being added.");
-        else {
-			if (links.contains(addFeed.toString()))
-				Log.d("swiggins", addFeed + " is already in the list.");
-			else {
-				Log.d("swiggins", addFeed + " is being added.");
-				links.add(addFeed);
-				for (String link : links) {
-					Log.d("swiggins", link);
-				}
-
-				updateFeeds();
-			}
-        }
+		updateFeeds();
         
-		if (updateOnAppearance) {
+		if (updateOnAppearance)
 			this.setUpdateWhenScreenOn(updateOnAppearance);
-		} else {
+		else
 			this.setUpdateWhenScreenOn(updateOnAppearance);
-		}
 
     }
 
@@ -101,10 +86,8 @@ public class RssDashClockService extends DashClockExtension
 		if ((new java.util.Date()).getTime() - lastUpdate > 3600000)
             updateFeeds();
         else
-			if (!links.isEmpty()) {
-				Log.d("swiggins", "pop!");
+			if (!links.isEmpty())
 				feedstack.pop();
-			}
 
     }
 }
