@@ -13,4 +13,8 @@
     <string name="pref_update_screen_summary">Pop goes the stack</string>
     <string name="pref_sync_title">Sync frequency</string>
     <string name="pref_sync_summary">How often to check for new stuff</string>
+
+	<string name="add_menu">Add</string>
+
+	<string name="feed_list_title">Feed list</string>
 </resources>

@@ -23,8 +23,8 @@ import java.util.Queue;
 import java.util.Collections;
 import java.net.URL;
 
-public class RssDashClockService extends DashClockExtension
-{
+public class RssDashClockService extends DashClockExtension {
+
     private static final String TAG = "RssDashClockExtension";
     private static final String PREF_FEED = "pref_feed";
     private static final String PREF_UPDATE_SCREEN = "pref_update_screen";
@@ -35,6 +35,8 @@ public class RssDashClockService extends DashClockExtension
     private long lastUpdate = 0;
 
     protected void onInitialize(boolean isReconnect) {
+
+		Log.d("swiggins", "In onInitialize(true)");
 
 		SharedPreferences prefs = this.getSharedPreferences("com.swiggins.rssfordashclock", Context.MODE_PRIVATE);
         boolean updateOnAppearance = prefs.getBoolean(PREF_UPDATE_SCREEN, true);
@@ -47,17 +49,24 @@ public class RssDashClockService extends DashClockExtension
 
     protected void updateFeeds() {
 
+		Log.d("swiggins", "In updateFeeds()");
+
 		lastUpdate = new java.util.Date().getTime();
 		AndroidSaxFeedParser feed = null;
 
 		try {
-			while (!feedqueue.isEmpty())
-				feedqueue.poll();
+			while (!feedqueue.isEmpty()) {
+				Log.d("swiggins", "Clearing queue");
+				feedqueue.remove();
+			}
 
 			for (String link : links) {
 				feed = new AndroidSaxFeedParser(link);
-				for (Message m : feed.parse())
-					feedqueue.add(m);
+				if (feed != null)
+					for (Message m : feed.parse()) {
+						Log.d("swiggins", "Adding message " + m.getTitle());
+						feedqueue.add(m);
+					}
 			}
 		}
 		catch (Exception e) {
@@ -69,8 +78,6 @@ public class RssDashClockService extends DashClockExtension
     }
 	
     protected void onUpdateData(int reason) {
-
-		onInitialize(true);
 
         publishUpdate(new ExtensionData()
             .visible(true)
@@ -84,8 +91,13 @@ public class RssDashClockService extends DashClockExtension
 		if ((new java.util.Date()).getTime() - lastUpdate > 3600000)
             updateFeeds();
         else
-			if (!links.isEmpty())
+			if (!feedqueue.isEmpty()) {
+				Log.d("swiggins", "Displaying: " + feedqueue.peek().getTitle());
 				feedqueue.poll();
+				Log.d("swiggins", "Up next: " + feedqueue.peek().getTitle());
+			}
+			else 
+				onInitialize(true);
 
     }
 }

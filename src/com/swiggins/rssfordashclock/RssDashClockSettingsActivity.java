@@ -6,16 +6,22 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
+import android.preference.PreferenceCategory;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.ArrayAdapter;
 
 import android.content.SharedPreferences;
 import android.content.Context;
 import android.util.Log;
+
+import android.view.Menu;
+import android.view.MenuInflater;
+
 
 public class RssDashClockSettingsActivity extends PreferenceActivity {
 
@@ -32,9 +38,6 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.pref);
 		setContentView(R.layout.main);
 
-		adapter = new ArrayAdapter<String>(this, R.id.url_list, RssDashClockService.links);
-		setListAdapter(adapter);
-
 		final SharedPreferences prefs = this.getSharedPreferences("com.swiggins.rssfordashclock", Context.MODE_PRIVATE);
         final CheckBoxPreference checkbox = (CheckBoxPreference) getPreferenceManager().findPreference("pref_update_screen");
         checkbox.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -45,19 +48,28 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
             }
         });
 
+		// for feed_list
+		final PreferenceCategory cat = new PreferenceCategory(getApplicationContext());
+		cat.setTitle("Cat title");
+
 		final EditTextPreference editText = (EditTextPreference) getPreferenceManager().findPreference("pref_feed");
-		editText.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+		editText.setOnPreferenceChangeListener(
+			new Preference.OnPreferenceChangeListener() {
 			public boolean onPreferenceChange(Preference pref, Object newValue) {
 				prefs.edit().putString(pref.getKey(), newValue.toString()).commit();
 				if (!RssDashClockService.links.contains(newValue.toString())) {
-					Log.d("swiggins", "links.add("+newValue.toString()+", adapter.notify()");
+					Log.d("swiggins", "links.add("+newValue.toString() + ")");
 					RssDashClockService.links.add(newValue.toString());
-					adapter.notifyDataSetChanged();
+
+					pref.setTitle(pref.getKey());
+					pref.setSummary(newValue.toString());
+					cat.addPreference(pref);
 				}
 
 				return true;
 			}
 		});
+
     }
 
     @Override
@@ -65,14 +77,31 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
         super.onPostCreate(savedInstanceState);
     }
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.add_menu, menu);
+		return true;
+	}
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				return true;
+			case R.menu.add_menu:
+				addToList();
+				return true;
+			default: 
+				Log.d("swiggins", "Default case?");
+				return super.onOptionsItemSelected(item);
+		}
     }
+
+	public void addToList() {
+		
+	}
 
 }
