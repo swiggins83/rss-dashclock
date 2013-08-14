@@ -11,6 +11,7 @@ import android.preference.EditTextPreference;
 import android.preference.PreferenceCategory;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.Toast;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
@@ -36,7 +37,6 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         addPreferencesFromResource(R.xml.pref);
-		setContentView(R.layout.main);
 
 		final SharedPreferences prefs = this.getSharedPreferences("com.swiggins.rssfordashclock", Context.MODE_PRIVATE);
         final CheckBoxPreference checkbox = (CheckBoxPreference) getPreferenceManager().findPreference("pref_update_screen");
@@ -48,24 +48,18 @@ public class RssDashClockSettingsActivity extends PreferenceActivity {
             }
         });
 
-		// for feed_list
-		final PreferenceCategory cat = new PreferenceCategory(getApplicationContext());
-		cat.setTitle("Cat title");
-
 		final EditTextPreference editText = (EditTextPreference) getPreferenceManager().findPreference("pref_feed");
 		editText.setOnPreferenceChangeListener(
 			new Preference.OnPreferenceChangeListener() {
 			public boolean onPreferenceChange(Preference pref, Object newValue) {
 				prefs.edit().putString(pref.getKey(), newValue.toString()).commit();
 				if (!RssDashClockService.links.contains(newValue.toString())) {
-					Log.d("swiggins", "links.add("+newValue.toString() + ")");
+					Log.d("swiggins", "links.add("+newValue.toString()+")");
 					RssDashClockService.links.add(newValue.toString());
 
-					pref.setTitle(pref.getKey());
-					pref.setSummary(newValue.toString());
-					cat.addPreference(pref);
+					for (String link : RssDashClockService.links)
+						Toast.makeText(RssDashClockSettingsActivity.this, link, Toast.LENGTH_SHORT).show();
 				}
-
 				return true;
 			}
 		});

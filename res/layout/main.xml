@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" >
 
-	<TextView  
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" 
-		android:text="Why hello, peoples of a populace" />
-
-	<ListView android:id="@android:id/list"
+	<ListView android:id="@+id/android:list"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent" />
 
 	<ListView android:id="@+id/feed_list"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent" />
+		android:layout_height="fill_parent" >
+		
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:text="Fotoe" />
+
+		<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:text="jkjw" />
+		
+	</ListView>
 
 </LinearLayout>
-
